@@ -1,21 +1,34 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import store, {ADD_INGREDIENT} from "./../../store";
 
 class Ingredients extends Component {
   constructor(props) {
     super(props);
+    let reduxState = store.getState();
     this.state = {
-      ingredients: [],
-      input: ""
+      ingredients: reduxState.ingredients,
+      input: ''
     };
   }
+
+  componentDidMount() {
+    store.subscribe( () => {
+      let reduxState = store.getState();
+      this.setState({ingredients: reduxState.ingredients});
+    });
+  }
+
   handleChange(val) {
     this.setState({
       input: val
     });
   }
   addIngredient() {
-    // Send data to Redux state
+    store.dispatch({
+      type: ADD_INGREDIENT,
+      payload: this.state.input
+    })
     this.setState({
       input: ""
     });
